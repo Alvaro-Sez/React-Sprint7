@@ -1,3 +1,5 @@
+/* eslint-disable */
+import {useLocation, useHistory} from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { 
   Form,
@@ -9,6 +11,8 @@ import {
  import ListaElement from './ListaElement'
 
 function PresupostWeb(props){
+  let location = useLocation()
+  let history = useHistory()
   const {setShow, setPages, setLenguages, lenguages, pages} = props
   const [features, setFeatures] = useState({
     web:0,
@@ -24,6 +28,18 @@ function PresupostWeb(props){
     lenguages,
     presupostLista
   }
+
+  useEffect(()=>{
+      console.log(location.search)
+      const urlParams = new URLSearchParams(location.search)
+      const web = urlParams.get('web')? 500 : 0
+      const seo = urlParams.get('seo')? 300 : 0
+      const ads = urlParams.get('ads')? 200 : 0
+      setFeatures({web, seo, ads})
+      if(urlParams.get('pages'))setPages(urlParams.get('pages'))
+      if(urlParams.get('lenguages'))setLenguages(urlParams.get('lenguages'))
+    },[])
+    
   useEffect(()=>{
     const data = localStorage.getItem('info')
     if(data){
@@ -32,11 +48,15 @@ function PresupostWeb(props){
       setPages(info.pages)
       setLenguages(info.lenguages)
       setPresupostLista(info.presupostLista)
-    }
+    } 
   },[setLenguages, setPages])
+
   useEffect(()=>{
     localStorage.setItem('info', JSON.stringify(objInfo))
-  })
+  },[features, pages, lenguages, presupostLista])
+  useEffect(()=>{
+      history.push({search:`?web=${features.web}&seo=${features.seo}&ads=${features.ads}&pages=${pages}&lenguages=${lenguages}`})
+  },[features, pages, lenguages, history])
 
   const handleSaveInfo = () => {
     const time = new Date().toLocaleString()
