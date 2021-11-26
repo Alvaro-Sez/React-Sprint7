@@ -124,22 +124,23 @@ export const WrapperPresupost = styled.div`
 `
 
 export const Lista = styled.div`
-  width:500px;
+  width:700px;
   border:3px solid black;
   border-radius: 20px;
   background-color: lightyellow;
-  height: 650px;
+  height: 600px;
   display:flex;
   justify-content: start;
   align-items: start;
   flex-direction: column;
   flex-wrap:wrap;
   padding:20px;
+  margin-top:50px;
   div{
     border: 3px solid black;
     border-radius: 15px;
     width: 200px;
-    height: 190px;
+    height: 170px;
     background-color: palevioletred;
     margin: 10px;
   }
@@ -148,8 +149,11 @@ export const Lista = styled.div`
     padding:10px;
     margin:0;
     margin-left:20px;
-    font-size:14px;
+    font-size:12px;
   }
-  div ul li{
+  span{
+    position: absolute;
+    top:94px;
+    width: 500px;
   }
 `

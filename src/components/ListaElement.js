@@ -4,7 +4,7 @@ function ListaElement (props) {
     <>
       <div>
         <ul>
-          {client ?<li> cliente: {client}</li>: ''} 
+          {client ?<li> nombre cliente: {client}</li>: ''} 
           {project ?<li> proyecto: {project}</li>: ''} 
           {web?<li> Proyecto web: 500€</li>: ''} 
           {pages ?<li> paginas: {pages}</li>: ''} 

@@ -18,11 +18,11 @@ function PresupostWeb(props){
   const [clientName, setClientName] = useState(null)
   const [projectName, setProjectName] = useState(null)
   const [presupostLista, setPresupostLista] = useState([])
-  
   const objInfo = {
     features,
     pages,
-    lenguages
+    lenguages,
+    presupostLista
   }
   useEffect(()=>{
     const data = localStorage.getItem('info')
@@ -31,6 +31,7 @@ function PresupostWeb(props){
       setFeatures(info.features)
       setPages(info.pages)
       setLenguages(info.lenguages)
+      setPresupostLista(info.presupostLista)
     }
   },[setLenguages, setPages])
   useEffect(()=>{
@@ -38,13 +39,38 @@ function PresupostWeb(props){
   })
 
   const handleSaveInfo = () => {
-    const time = new Date().toLocaleDateString()
-    const newElement = {...objInfo, clientName, projectName, time, preu}
+    const time = new Date().toLocaleString()
+    const miliseconds = Date.now()
+    let hide = false
+    const newElement = {...objInfo, clientName, projectName, time, preu, miliseconds, hide}
     setPresupostLista([...presupostLista, newElement])
-    console.log(presupostLista)
+  }
+  const orderByName = () => {
+    const newArr = presupostLista.sort((elementA, elementB) =>elementA.clientName&&elementB.clientName? elementA.clientName.localeCompare(elementB.clientName):null)
+    setPresupostLista([...newArr])
+  }
+  const orderByDate = () =>{
+    const newArr = presupostLista.sort((elementA,elementB)=> elementA.miliseconds - elementB.miliseconds ).reverse()
+    setPresupostLista([...newArr])
+  }
+  const reinitOrder = () =>{
+    const newArr = presupostLista.sort((elementA,elementB)=> elementA.miliseconds - elementB.miliseconds )
+    setPresupostLista([...newArr])
+  }
+  const getByName = (e) =>{
+    presupostLista.forEach(element=>{
+      if(element.clientName && element.clientName.startsWith(e.target.value)){
+        element.hide = false
+      } else{
+        element.hide = true
+        console.log(element)
+      }
+    })
+    setPresupostLista([...presupostLista])
+
   }
 
-  /* esto esta muy feo , lose xD */
+ 
   let preuWeb = features.web && features.web +((pages + lenguages) *30)
   let preu = preuWeb + features.ads + features.seo  
   
@@ -99,19 +125,34 @@ function PresupostWeb(props){
         <button onClick={()=>setPresupostLista([])}> Limpiar lista </button>
     </Form>
     <Lista>
-      {presupostLista.map(element=>(
-        <ListaElement 
-        web={element.features.web}
-        seo={element.features.seo}
-        ads={element.features.ads}
-        pages={element.pages}
-        lenguages={element.lenguages}
-        client={element.clientName}
-        project={element.projectName}
-        date={element.time}
-        preu={element.preu}
-        />
-        )
+      <span>
+        <button onClick={orderByName}> ordenar por nombre</button>
+        <button onClick={orderByDate}> ordenar por fecha</button>
+        <button onClick={reinitOrder}> reiniciar orden</button>
+        <br/>
+        <label>
+          Buscar presupuesto por nombre: <input onChange={getByName}  type='text'></input>
+        </label>
+      </span>
+      {presupostLista.map((element, index)=>{
+        if(element.hide)return null
+        else{
+          return( 
+            <ListaElement
+            key={index} 
+            web={element.features.web}
+            seo={element.features.seo}
+            ads={element.features.ads}
+            pages={element.pages}
+            lenguages={element.lenguages}
+            client={element.clientName}
+            project={element.projectName}
+            date={element.time}
+            preu={element.preu}
+            />
+            )
+        }
+        }
       )}
     </Lista>
     </WrapperPresupost>
